@@ -1,0 +1,14 @@
+Basic Syntax:
+
+BUY WHEN <condition>
+SELL WHEN <condition>
+
+A <condition> is <indicator> <operator> <value>
+
+Supported indicators:
+SMA(20) -> Simple Moving Average
+SMA(50)
+
+Supported operators:
+>
+<
