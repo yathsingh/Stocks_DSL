@@ -9,6 +9,7 @@ Phase 1 => Skeleton setup and pipeline testing to ensure smooth flow
 6. Created prototype main.py and confirmed pipeline working
 
 Phase 2 => Implementing a robust DSL
-1. Well-defined syntax.md
+1. Well-defined and readable syntax.
+2. Defined valid indicators.
 
    
