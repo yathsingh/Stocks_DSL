@@ -88,10 +88,16 @@ ENTRY:
 
 # Assumptions
 
+Square brackets '[' and ']' indicate optional.
+
+Star '*' indicates zero or more repetitions.
+
+Operator precedence is left-associative.
+
 Keywords and identifiers are case-insensitive for usability.
 
 Volume is a numeric column (no human shorthand like '1M' in grammar).
 
 Natural-language normalization (e.g., "yesterday") will be handled separately, mapping those into lookbacks or numbers before parsing.
 
-This grammar intentionally avoids ambiguous constructs and focuses on determinism.
+Grammar intentionally avoids ambiguous constructs and focuses on determinism.
