@@ -8,6 +8,7 @@ Phase 1 => Skeleton setup and pipeline testing to ensure smooth flow
 5. Create basic simulator for OHLC values and processing them
 6. Created prototype main.py and confirmed pipeline working
 
-
+Phase 2 => Implementing a robust DSL
+1. Well-defined syntax.md
 
    
