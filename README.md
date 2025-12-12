@@ -24,3 +24,7 @@ Phase 4 => Generator
 
 Phase 5 => Backtest
 1. Created simulator.
+
+Phase 6 => NLP
+1. Created Natural Language to JSON Structure converter
+2. Created JSON Structure to DSL converter
