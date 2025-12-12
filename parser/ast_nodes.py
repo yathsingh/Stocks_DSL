@@ -1,132 +1,91 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional
+from typing import List, Optional, Any
 
 
 @dataclass
-class ASTNode:
-    """Base class for AST nodes (empty base for type clarity)."""
+class StrategyNode:
+    entry: Optional["EntryBlockNode"]
+    exit: Optional["ExitBlockNode"]
 
-    pass
+    def __repr__(self):
+        return f"StrategyNode(entry={self.entry}, exit={self.exit})"
 
-
-# 1. Primitive Nodes
 
 @dataclass
-class IdentifierNode(ASTNode):
-    "Represents a bare identifier."
+class EntryBlockNode:
+    rules: List[Any]   
 
+    def __repr__(self):
+        return f"EntryBlockNode(rules={self.rules})"
+
+
+@dataclass
+class ExitBlockNode:
+    rules: List[Any]
+
+    def __repr__(self):
+        return f"ExitBlockNode(rules={self.rules})"
+
+
+@dataclass
+class LogicalOpNode:
+    op: str            # AND / OR
+    left: Any
+    right: Any
+
+    def __repr__(self):
+        return f"LogicalOpNode({self.op}, {self.left}, {self.right})"
+
+
+@dataclass
+class CompareNode:
+    left: Any
+    op: str            # >, <, >=, <=, ==
+    right: Any
+
+    def __repr__(self):
+        return f"CompareNode({self.left} {self.op} {self.right})"
+
+
+@dataclass
+class CrossNode:
+    left: Any
+    direction: str     # ABOVE / BELOW
+    right: Any
+
+    def __repr__(self):
+        return f"CrossNode({self.left}, {self.direction}, {self.right})"
+
+
+@dataclass
+class IdentifierNode:
     name: str
 
     def __repr__(self):
-        return f"Identifier({self.name!r})"
+        return f"Identifier({self.name})"
 
 
 @dataclass
-class NumberNode(ASTNode):
-    "Represents a numeric literal (text preserved)."
-    value: str
+class NumberNode:
+    value: float
 
     def __repr__(self):
-        return f"Number({self.value!r})"
+        return f"Number({self.value})"
 
-
-# 2. Lookback Node
 
 @dataclass
-class LookbackNode(ASTNode):
-    "Represents lookback like close[1]."
-
+class LookbackNode:
     name: str
     offset: int
 
     def __repr__(self):
-        return f"Lookback({self.name!r}, {self.offset})"
-
-
-# 3. Indicator Node
-
-@dataclass
-class IndicatorNode(ASTNode):
-    "Represents an indicator call, holding canonical name and raw arg nodes."
-
-    name: str
-    args: List[ASTNode]
-
-    def __repr__(self):
-        return f"Indicator({self.name!r}, args={self.args!r})"
-
-
-# 4. Cross Event Node 
-
-class CrossNode(ASTNode):
-    "Represents CROSS(left, direction, right), where direction is 'ABOVE' or 'BELOW'."
-
-    left: ASTNode
-    direction: str
-    right: ASTNode
-
-    def __repr__(self):
-        return f"Cross({self.left!r}, {self.direction!r}, {self.right!r})"
-
-
-# 5. Comparison Node
-
-@dataclass
-class CompareNode(ASTNode):
-    "Binary comparison between two operands using operator like '>' or '<='."
-
-    left: ASTNode
-    op: str
-    right: ASTNode
-
-    def __repr__(self):
-        return f"Compare({self.left!r} {self.op} {self.right!r})"
-
-
-# 6. Logical Operators Node
-
-@dataclass
-class LogicalOpNode(ASTNode):
-    "Logical operation node (AND, OR) with left/right. For NOT, right is the operand and left=None."
-
-    op: str
-    left: Optional[ASTNode]
-    right: ASTNode
-
-    def __repr__(self):
-        if self.left is None:
-            return f"LogicalOp({self.op!r} {self.right!r})"
-        return f"LogicalOp({self.left!r} {self.op!r} {self.right!r})"
-
-
-# 7. Rules and Strategy Container Nodes
-
-@dataclass
-class BuyRuleNode(ASTNode):
-    "Holds the parsed condition AST for a BUY rule."
-
-    condition: ASTNode
-
-    def __repr__(self):
-        return f"BuyRule({self.condition!r})"
+        return f"Lookback({self.name}[{self.offset}])"
 
 
 @dataclass
-class SellRuleNode(ASTNode):
-    "Holds the parsed condition AST for a SELL rule."
-
-    condition: ASTNode
-
-    def __repr__(self):
-        return f"SellRule({self.condition!r})"
-
-
-@dataclass
-class StrategyNode(ASTNode):
-    "Top-level strategy container with buy_rules and sell_rules lists."
-    
-    buy_rules: List[BuyRuleNode]
-    sell_rules: List[SellRuleNode]
+class IndicatorCallNode:
+    name: str            # SMA, RSI, etc.
+    args: List[Any]      # list of operands or numbers
 
     def __repr__(self):
-        return f"StrategyNode(buy_rules={self.buy_rules!r}, sell_rules={self.sell_rules!r})"
+        return f"IndicatorCall({self.name}, args={self.args})"

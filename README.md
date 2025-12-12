@@ -9,12 +9,13 @@ Phase 1 => Skeleton setup and pipeline testing to ensure smooth flow
 6. Created prototype main.py and confirmed pipeline working.
 
 Phase 2 => DSL
-1. Well-defined and readable syntax.
+1. Defined and locked syntax.
 2. Defined valid indicators.
 3. Defined operators.
 
 Phase 3 => Parser
-1. Created AST Nodes
-2. Created parser (External Library used: Lark)
+1. Created AST Nodes.
+2. Created token stream (parser helper).
+3. Created parser.
 
 Phase 4 =>
