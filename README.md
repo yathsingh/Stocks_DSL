@@ -1,5 +1,4 @@
-**BONUS INSIGHTS**
-Building Process:
+**DOCUMENTATION OF BUILDING PROCESS:**
 
 Phase 1 => Skeleton setup and pipeline testing to ensure smooth flow
 1. Created a base 'template' architecture of folders.
