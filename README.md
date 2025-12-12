@@ -15,6 +15,6 @@ Phase 2 => DSL
 
 Phase 3 => Parser
 1. Created AST Nodes
-2. Created parser
+2. Created parser (External Library used: Lark)
 
-   
+Phase 4 =>
