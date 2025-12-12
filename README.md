@@ -21,3 +21,6 @@ Phase 3 => Parser
 
 Phase 4 => Generator
 1. Created generator.
+
+Phase 5 => Backtest
+1. Created simulator.
