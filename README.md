@@ -1,3 +1,6 @@
+Grammar explaination for better understanding: syntax_explaination.md 
+Actual grammar syntax: dsl/syntax.md
+
 **HOW TO RUN**
 
 Pull the project and run 'main.py'.
@@ -7,7 +10,7 @@ and quick report generation, of enter your own custom input.
 
 *If you DO choose to enter custom input, please read:*
 
-**Basic Rules**
+***Basic Rules***
 
 Write one trading condition per sentence.
 
@@ -19,7 +22,7 @@ Clearly indicate whether a sentence is for entry (buy, enter) or exit (exit, sel
 
 Keep sentences short and direct.
 
-**Examples**
+***Examples***
 
 1. Price vs Indicator
 
@@ -77,3 +80,4 @@ Phase 6 => NLP
 
 Phase 7 => Backtest (v2) 
 1. Created main function to showcase pipeline.
+2. Polished the pipeline components and improved main function for demos.
