@@ -1,4 +1,4 @@
-<h5>End-to-end NLP → DSL → AST → Python pipeline for stock trading strategies with backtesting.<h5>
+<h3>End-to-end NLP → DSL → AST → Python pipeline for stock trading strategies with backtesting.<h3>
 
 Grammar explaination for better understanding: syntax_explaination.md 
 
@@ -15,6 +15,7 @@ You will have the options to pick preset language commands for testing
 and quick report generation, of enter your own custom input.
 
 *If you DO choose to enter custom input, please read:*
+<br>
 
 ***Basic Rules***
 
@@ -27,6 +28,7 @@ If your strategy has multiple conditions, write them as multiple lines.
 Clearly indicate whether a sentence is for entry (buy, enter) or exit (exit, sell).
 
 Keep sentences short and direct.
+<br>
 
 ***Examples***
 
