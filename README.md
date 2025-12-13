@@ -29,5 +29,5 @@ Phase 6 => NLP
 1. Created Natural Language to JSON Structure converter.
 2. Created JSON Structure to DSL converter.
 
-Phase 5 (v2) => Backtest
+Phase 7 => Backtest (v2) 
 1. Created main function to showcase pipeline.

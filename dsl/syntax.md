@@ -1,29 +1,35 @@
-# Top-level Structure
+# Top-Level Structure
 
-STRATEGY  ::= [ENTRY_BLOCK] [EXIT_BLOCK]
+STRATEGY ::= [ENTRY_BLOCK] [EXIT_BLOCK]
 
-ENTRY_BLOCK ::= "ENTRY:" NEWLINE RULE_LIST
+ENTRY_BLOCK ::= "ENTRY:" [RULE] NEWLINE* RULE_LIST
+EXIT_BLOCK  ::= "EXIT:"  [RULE] NEWLINE* RULE_LIST
 
-EXIT_BLOCK  ::= "EXIT:" NEWLINE RULE_LIST
-
-RULE_LIST ::= RULE (NEWLINE RULE)*
+RULE_LIST ::= RULE ( NEWLINE* RULE )*
 
 
 # Rule / Expression Grammar
 
 RULE ::= EXPR
 
-EXPR ::= TERM ( ( "AND" | "OR" ) TERM ) 
+EXPR ::= TERM ( ( "AND" | "OR" ) TERM )*
+
 
 TERM ::= FACTOR | "(" EXPR ")"
 
 FACTOR ::= COMPARISON | CROSS_EVENT
 
-COMPARISON ::= OPERAND COMP_OP OPERAND 
 
-COMP_OP ::= ">" | "<" | ">=" | "<=" | "==" 
+# Comparison Expressions
 
-OPERAND ::= IDENTIFIER | NUMBER | INDICATOR | LOOKBACK_IDENTIFIER
+COMPARISON ::= OPERAND COMP_OP OPERAND
+
+COMP_OP ::= ">" | "<" | ">=" | "<=" | "=="
+
+
+# Operands
+
+OPERAND ::= IDENTIFIER | NUMBER | STRING | INDICATOR | LOOKBACK_IDENTIFIER
 
 
 # Indicator Syntax
@@ -32,16 +38,19 @@ INDICATOR ::= IDENT_NAME "(" ARG_LIST ")"
 
 ARG_LIST ::= ARG ("," ARG)*
 
-ARG ::= IDENTIFIER | NUMBER
+ARG ::= IDENTIFIER | NUMBER | STRING
 
-IDENT_NAME ::= "SMA" | "RSI"   
+IDENT_NAME ::= "SMA" | "RSI"
 
 
 # Cross Events
 
 CROSS_EVENT ::= "CROSS" "(" OPERAND "," DIRECTION "," OPERAND ")"
 
-DIRECTION ::= "\"ABOVE\"" | "\"BELOW\""   
+DIRECTION ::= "ABOVE" | "BELOW"
+
+
+# Lookbacks
 
 LOOKBACK_IDENTIFIER ::= IDENTIFIER "[" INT "]"
 
@@ -50,54 +59,48 @@ LOOKBACK_IDENTIFIER ::= IDENTIFIER "[" INT "]"
 
 IDENTIFIER ::= "open" | "high" | "low" | "close" | "volume" | "price"
 
-NUMBER ::= integer | float
+NUMBER     ::= integer | float
+STRING     ::= "\"" characters "\""
+INT        ::= [0-9]+
 
-INT ::= [0-9]+
+NEWLINE    ::= "\n"
 
-NEWLINE ::= "\n"
-
-WHITESPACE: ignored between tokens
-
-COMMENTS: lines starting with "#" are ignored by the tokenizer/parser
+WHITESPACE : ignored between tokens
+COMMENTS   : lines beginning with "#" are ignored
 
 
-# Examples that can be copy pasted
+# Examples
 
-# 1. simple entry + exit example
-
+# 1. Simple entry + exit
 ENTRY:
 close > SMA(close,20) AND volume > 1000000
+
 EXIT:
 RSI(close,14) < 30
 
-# 2. cross-event example
 
-ENTRY: 
+# 2. Cross event
+ENTRY:
 CROSS(close, "ABOVE", SMA(close,20))
 
-# 3. lookback example (yesterday's high)
 
+# 3. Lookback example
 ENTRY:
 close > high[1]
 
-# 4. parentheses & OR example
 
+# 4. Parentheses & OR
 ENTRY:
 (close > SMA(close,20) AND volume > 1000000) OR RSI(close,14) < 30
 
 
 # Assumptions
 
-Square brackets '[' and ']' indicate optional.
-
-Star '*' indicates zero or more repetitions.
-
-Operator precedence is left-associative.
-
-Keywords and identifiers are case-insensitive for usability.
-
-Volume is a numeric column (no human shorthand like '1M' in grammar).
-
-Natural-language normalization (e.g., "yesterday") will be handled separately, mapping those into lookbacks or numbers before parsing.
-
-Grammar intentionally avoids ambiguous constructs and focuses on determinism.
+1. Square brackets '[X]' represent optional components.
+2. '*' indicates zero or more repetitions.
+3. Boolean operators are left-associative.
+4. Keywords and identifiers are case-insensitive.
+5. The DSL uses numeric literals exclusively (no shorthand like 1M).
+6. Natural-language expressions ("yesterday", "last week") are normalized
+   BEFORE reaching this grammar.
+7. Grammar is intentionally LL(1) and unambiguous to support recursive descent.
