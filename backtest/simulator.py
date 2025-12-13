@@ -1,85 +1,96 @@
+from typing import List, Dict, Tuple
 import pandas as pd
 
-class Trade:
+
+def run_backtest(df: pd.DataFrame,
+                 entry_signal: pd.Series,
+                 exit_signal: pd.Series) -> Tuple[List[Dict], Dict]:
     """
-    Simple trade record for clarity.
+    Parameters:
+    df : pandas.DataFrame
+        Must contain a 'close' price column.
+    entry_signal : pandas.Series(bool)
+        True when we should open a long position.
+    exit_signal : pandas.Series(bool)
+        True when we should close the position.
+
+    Returns:
+    -------
+    trades : list of dicts
+        One entry per trade with:
+            entry_index
+            exit_index
+            entry_price
+            exit_price
+            pnl
+    metrics : dict
+        Simple performance summary:
+            total_pnl
+            num_trades
+            wins
+            losses
     """
-
-    def __init__(self, entry_idx, entry_price):
-
-        self.entry_idx = entry_idx
-        self.entry_price = entry_price
-        self.exit_idx = None
-        self.exit_price = None
-
-    def close(self, exit_idx, exit_price):
-
-        self.exit_idx = exit_idx
-        self.exit_price = exit_price
-
-    def pnl(self):
-
-        if self.exit_price is None:
-            return 0.0
-        return self.exit_price - self.entry_price
-
-    def __repr__(self):
-        return (
-            f"Trade(entry_idx={self.entry_idx}, entry_price={self.entry_price}, "
-            f"exit_idx={self.exit_idx}, exit_price={self.exit_price}, pnl={self.pnl():.2f})"
-        )
-
-
-def run_backtest(df, signals):
-    """
-    PARAMETERS:
-    df : pandas DataFrame (must contain 'close')
-    signals : dict with:
-        1. 'entry' : pandas Series[bool]
-        2. 'exit' : pandas Series[bool]
-
-    RETURNS:
-    dict with:
-        1. 'trades': list of Trade objects
-        2. 'metrics': simple summary
-    """
-
-    entry_signal = signals["entry"]
-    exit_signal = signals["exit"]
 
     trades = []
-    position = None   
+    position_open = False
 
-    for idx in range(len(df)):
-        close_price = df["close"].iloc[idx]
+    entry_idx = None
+    entry_price = None
 
-        if position is None and entry_signal.iloc[idx]:
-            position = Trade(entry_idx=idx, entry_price=close_price)
-            continue
 
-        if position is not None and exit_signal.iloc[idx]:
-            position.close(exit_idx=idx, exit_price=close_price)
-            trades.append(position)
-            position = None
-            continue
+    for i in range(len(df)):
 
-    if position is not None:
+        #ENTRY LOGIC
+        if not position_open and entry_signal.iloc[i]:
+            position_open = True
+            entry_idx = i
+            entry_price = df["close"].iloc[i]
+
+        #EXIT LOGIC
+        elif position_open and exit_signal.iloc[i]:
+            exit_price = df["close"].iloc[i]
+            pnl = exit_price - entry_price
+
+            trades.append({
+                "entry_index": entry_idx,
+                "exit_index": i,
+                "entry_price": float(entry_price),
+                "exit_price": float(exit_price),
+                "pnl": float(pnl),
+            })
+
+            # RESET STATE
+            position_open = False
+            entry_idx = None
+            entry_price = None
+
+  
+    # At the end of the data, if still in a trade, then exit on last bar
+
+    if position_open:
         exit_price = df["close"].iloc[-1]
-        position.close(exit_idx=len(df)-1, exit_price=exit_price)
-        trades.append(position)
+        pnl = exit_price - entry_price
 
-    total_pnl = sum(t.pnl() for t in trades)
-    win_trades = [t for t in trades if t.pnl() > 0]
-    loss_trades = [t for t in trades if t.pnl() <= 0]
+        trades.append({
+            "entry_index": entry_idx,
+            "exit_index": len(df) - 1,
+            "entry_price": float(entry_price),
+            "exit_price": float(exit_price),
+            "pnl": float(pnl),
+        })
+
+
+    # Compute performance metrics
+
+    total_pnl = sum(t["pnl"] for t in trades)
+    wins = sum(1 for t in trades if t["pnl"] > 0)
+    losses = sum(1 for t in trades if t["pnl"] <= 0)
 
     metrics = {
-        "total_pnl": total_pnl,
+        "total_pnl": float(total_pnl),
         "num_trades": len(trades),
-        "wins": len(win_trades),
-        "losses": len(loss_trades),
+        "wins": wins,
+        "losses": losses,
     }
 
-    return {
-        "trades": trades,
-        "metrics": metrics,
-    }
+    return trades, metrics
