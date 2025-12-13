@@ -30,7 +30,7 @@ If your strategy has multiple conditions, write them as multiple lines.
 Clearly indicate whether a sentence is for entry (buy, enter) or exit (exit, sell).
 
 Keep sentences short and direct.
-<br>
+<br><br>
 
 ***Examples***
 
