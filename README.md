@@ -1,4 +1,6 @@
-<h3>End-to-end NLP → DSL → AST → Python pipeline for stock trading strategies with backtesting.<h3>
+## End-to-End Trading Strategy Pipeline
+
+**An end-to-end NLP → DSL → AST → Python pipeline for defining and backtesting stock trading strategies.**
 
 Grammar explaination for better understanding: syntax_explaination.md 
 
