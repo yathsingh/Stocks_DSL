@@ -32,6 +32,7 @@ def load_evaluator(python_src: str):
 
 
 def load_sample_data():
+
     data = {
         "open":   [100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
         "high":   [101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
@@ -39,80 +40,92 @@ def load_sample_data():
         "close":  [100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
         "volume": [500000, 1200000, 900000, 2000000, 1500000, 1100000, 950000, 1800000, 1300000, 1600000],
     }
-    return pd.DataFrame(data)
 
+    return pd.DataFrame(data)
 
 
 def main():
 
-    print("\n======= NATURAL LANGUAGE INPUT =======\n")
-    nl = """
-    Buy when price closes above the 20-day moving average
-    and volume is above 1M.
-    Exit when RSI 14 is below 30.
-    """
+    print("\n=== STRATEGY INPUT MODE ===")
+    print("1) Use preset natural-language strategies")
+    print("2) Enter your own natural-language strategy")
+
+    choice = input("\nSelect option (1 or 2): ").strip()
+
+    presets = {
+        "1": """
+        Buy when price closes above the 20-day moving average.
+        Buy when volume is above 1M.
+        Exit when RSI 14 is below 30.
+        """,
+
+        "2": """
+        Enter when close crosses above the 10-day moving average.
+        Exit when close crosses below the 10-day moving average.
+        """,
+        
+        "3": """
+        Buy when yesterday's high is above today's close.
+        Exit when volume is below 900k.
+        """
+    }
+
+    if choice == "1":
+        print("\nAvailable presets:")
+        for k in presets:
+            print(f"{k}) Preset {k}")
+
+        p = input("\nChoose preset number: ").strip()
+        nl = presets.get(p)
+
+        if not nl:
+            print("Invalid preset.")
+            return
+
+    elif choice == "2":
+        print("\nEnter your strategy (finish with an empty line):")
+        lines = []
+        while True:
+            line = input()
+            if not line.strip():
+                break
+            lines.append(line)
+        nl = "\n".join(lines)
+
+    else:
+        print("Invalid choice.")
+        return
+
     nl = textwrap.dedent(nl).strip()
+
+    print("\n======= NATURAL LANGUAGE INPUT =======\n")
     print(nl)
 
-    
-    # 1) NL → structured objects
-   
+    # Pipeline continues exactly as before
     struct = nl_to_struct(nl)
-
-    print("\n======= STRUCTURED (JSON-style) RULES =======\n")
-    print(struct)
-
-
-    # 2) structured objects → DSL
+    print("\n======= STRUCT =======\n", struct)
 
     dsl = struct_to_dsl(struct)
-
-    print("\n======= GENERATED DSL =======\n")
-    print(dsl)
-  
-    # 3) DSL → AST
+    print("\n======= DSL =======\n", dsl)
 
     ast = parse_strategy_text(dsl)
-
-    print("\n======= AST =======\n")
-    print(format_ast(ast))
-
-    # 4) AST → Python strategy code
+    print("\n======= AST =======\n", ast)
 
     python_src = generate_python(ast)
-
-    print("\n======= GENERATED PYTHON CODE =======\n")
-    print(python_src)
-
-    # 5) Load evaluate_strategy(df)
+    print("\n======= PYTHON CODE =======\n", python_src)
 
     evaluate = load_evaluator(python_src)
-
-    # 6) Sample data + compute signals
-
     df = load_sample_data()
 
     signals = evaluate(df)
-    entry = signals["entry"]
-    exit_ = signals["exit"]
+    trades, metrics = run_backtest(df, signals["entry"], signals["exit"])
 
-    print("\n======= ENTRY SIGNAL (head) =======\n")
-    print(entry.head())
-    print("\n======= EXIT SIGNAL (head) =======\n")
-    print(exit_.head())
-
-    # 7) Backtest simulation
-    
-    trades, metrics = run_backtest(df, entry, exit_)
-
-    print("\n======= BACKTEST TRADES =======\n")
+    print("\n======= TRADES =======")
     for t in trades:
         print(t)
 
-    print("\n======= BACKTEST METRICS =======\n")
+    print("\n======= METRICS =======")
     print(metrics)
-
-    print("\n======= END OF DEMO =======\n")
 
 
 if __name__ == "__main__":

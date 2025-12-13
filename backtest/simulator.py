@@ -42,12 +42,14 @@ def run_backtest(df: pd.DataFrame,
 
         #ENTRY LOGIC
         if not position_open and entry_signal.iloc[i]:
+
             position_open = True
             entry_idx = i
             entry_price = df["close"].iloc[i]
 
         #EXIT LOGIC
         elif position_open and exit_signal.iloc[i]:
+            
             exit_price = df["close"].iloc[i]
             pnl = exit_price - entry_price
 

@@ -79,7 +79,7 @@ def struct_to_dsl(struct: Dict[str, Any]) -> str:
         lines.append("ENTRY:")
         for rule in entry_rules:
             lines.append(rule_to_dsl(rule))
-        lines.append("")  # blank line after block
+        lines.append("")    
 
     # EXIT BLOCK
     if exit_rules:

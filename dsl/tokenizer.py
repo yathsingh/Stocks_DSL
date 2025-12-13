@@ -1,11 +1,12 @@
 import re 
 from dataclasses import dataclass  
-from typing import List, Iterator, Optional, Tuple 
+from typing import List, Iterator
 
 
 @dataclass
 class Token: 
     """A token produced by the DSL tokenizer."""
+    
     type: str       
     value: str      
     line: int      

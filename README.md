@@ -1,3 +1,49 @@
+**HOW TO RUN**
+
+Pull the project and run 'main.py'.
+
+You will have the options to pick preset language commands for testing
+and quick report generation, of enter your own custom input.
+
+*If you DO choose to enter custom input, please read:*
+
+**Basic Rules**
+
+Write one trading condition per sentence.
+
+Do not use and / or within the same sentence.
+
+If your strategy has multiple conditions, write them as multiple lines.
+
+Clearly indicate whether a sentence is for entry (buy, enter) or exit (exit, sell).
+
+Keep sentences short and direct.
+
+**Examples**
+
+1. Price vs Indicator
+
+Buy when close is above the 20-day moving average.
+
+2. Indicator vs Number
+
+Exit when RSI 14 is below 30.
+
+3. Volume Conditions
+
+Buy when volume is above 1M.
+Exit when volume is below 900k.
+
+4. Cross Events
+
+Enter when close crosses above the 10-day moving average.
+Exit when close crosses below the 10-day moving average.
+
+5. Lookback References
+
+Buy when yesterday's high is above today's close.
+
+**(EXTRA)**
 **DOCUMENTATION OF BUILDING PROCESS:**
 
 Phase 1 => Skeleton 

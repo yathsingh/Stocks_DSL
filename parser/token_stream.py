@@ -7,7 +7,6 @@ class TokenStream:
         self.tokens = tokens
         self.pos = 0 
 
-    # Basic operations
 
     def peek(self) -> Optional[Token]:
         """Return the current token without consuming it."""
@@ -15,6 +14,7 @@ class TokenStream:
         if self.pos >= len(self.tokens):
             return None
         return self.tokens[self.pos]
+
 
     def next(self) -> Optional[Token]:
         """Consume the current token and advance."""
@@ -25,7 +25,6 @@ class TokenStream:
         self.pos += 1
         return tok
 
-    # Conditional match
 
     def match(self, type_: str, value: Optional[str] = None) -> Optional[Token]:
         """
@@ -46,8 +45,6 @@ class TokenStream:
         return self.next()
 
 
-    # Required match
-
     def expect(self, type_: str, value: Optional[str] = None) -> Token:
         """
         Same as match(), but throws a readable error if the expected
@@ -55,20 +52,27 @@ class TokenStream:
         """
 
         tok = self.match(type_, value)
+
         if tok is None:
+
             expected = f"{type_}" if value is None else f"{type_}({value})"
             actual = self.peek()
+
             if actual:
+
                 raise SyntaxError(
                     f"Expected {expected}, got {actual.type}({actual.value}) "
                     f"at line {actual.line}, col {actual.col}"
                 )
+            
             else:
+
                 raise SyntaxError(f"Expected {expected}, but hit end of input")
+            
         return tok
 
-    # End-of-input helper
 
     def at_end(self) -> bool:
         """True if the stream has no more tokens."""
+
         return self.pos >= len(self.tokens)

@@ -74,27 +74,22 @@ def parse_rule_list(ts: TokenStream) -> List:
         nexttok = ts.peek()
 
         if nexttok is None:
-
             break
 
         if nexttok.type == "IDENT" and nexttok.value.upper() in ("ENTRY", "EXIT"):
-
             break
 
         rules.append(parse_expr(ts))
 
         while ts.match("NEWLINE"):
-
             pass
 
         nexttok = ts.peek()
 
         if nexttok is None:
-
             break
 
         if nexttok.type == "IDENT" and nexttok.value.upper() in ("ENTRY", "EXIT"):
-
             break
 
     return rules
@@ -119,7 +114,6 @@ def parse_expr(ts: TokenStream):
             node = LogicalOpNode(op, node, right)
 
         else:
-
             break
 
     return node
@@ -158,6 +152,7 @@ def parse_factor(ts: TokenStream):
 
         op = ts.next().value
         right = parse_operand(ts)
+
         return CompareNode(left, op, right)
 
     return left
@@ -210,14 +205,17 @@ def parse_arg_list(ts: TokenStream):
     ARG_LIST ::= ARG ("," ARG)*
     ARG ::= IDENT | NUMBER | STRING
     """
+    
     args = []
 
     if ts.peek() and ts.peek().type == "RPAREN":
+
         return args
 
     args.append(parse_operand(ts))
 
     while ts.match("COMMA"):
+
         args.append(parse_operand(ts))
 
     return args
