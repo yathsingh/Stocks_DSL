@@ -3,71 +3,101 @@ from typing import Dict, Any, List, Optional
 
 
 def normalize_number(text: str) -> float:
+
     text = text.lower().strip()
 
-    if text.endswith("m"):        # 1m = 1,000,000
+    if text.endswith("m"):
         return float(text[:-1]) * 1_000_000
 
-    if text.endswith("k"):        # 100k = 100,000
+    if text.endswith("k"):
         return float(text[:-1]) * 1_000
 
     return float(text)
 
 
 def parse_lookback_phrase(text: str) -> Optional[Dict[str, Any]]:
-    text = text.lower()
 
-    if "yesterday" in text or "previous" in text:
-    
-        if "high" in text:
-            return {"type": "operand", "kind": "lookback", "name": "high", "offset": 1}
-        if "low" in text:
-            return {"type": "operand", "kind": "lookback", "name": "low", "offset": 1}
-        if "close" in text:
-            return {"type": "operand", "kind": "lookback", "name": "close", "offset": 1}
+    t = text.lower().strip()
+
+    if "yesterday" in t or "previous" in t or "last session" in t:
+        for name in ["high", "low", "close", "open", "volume"]:
+            if name in t:
+                return {
+                    "type": "operand",
+                    "kind": "lookback",
+                    "name": name,
+                    "offset": 1
+                }
+
+    match = re.search(r"(\d+)\s*(days?|bars?)\s*(ago|back)?", t)
+    if match:
+        offset = int(match.group(1))
+        for name in ["high", "low", "close", "open", "volume"]:
+            if name in t:
+                return {
+                    "type": "operand",
+                    "kind": "lookback",
+                    "name": name,
+                    "offset": offset
+                }
+
+    match2 = re.search(r"look\s*back\s*(\d+)", t)
+    if match2:
+        offset = int(match2.group(1))
+        for name in ["high", "low", "close", "open", "volume"]:
+            if name in t:
+                return {
+                    "type": "operand",
+                    "kind": "lookback",
+                    "name": name,
+                    "offset": offset
+                }
 
     return None
 
 
-
 def parse_indicator(text: str) -> Optional[Dict[str, Any]]:
+
     t = text.lower().strip()
 
     sma_match = re.search(r"(\d+)[-\s]*day moving average", t)
     if sma_match:
-        period = int(sma_match.group(1))
         return {
             "type": "operand",
             "kind": "indicator",
             "name": "SMA",
-            "args": ["close", period]
+            "args": ["close", int(sma_match.group(1))]
         }
 
     rsi_match = re.search(r"rsi[\s\(]*(\d+)", t)
     if rsi_match:
-        period = int(rsi_match.group(1))
         return {
             "type": "operand",
             "kind": "indicator",
             "name": "RSI",
-            "args": ["close", period]
+            "args": ["close", int(rsi_match.group(1))]
         }
 
     return None
 
 
 def parse_basic_operand(text: str) -> Optional[Dict[str, Any]]:
+
     lowered = text.lower()
 
     for name in ["open", "high", "low", "close", "volume"]:
-        if name in lowered:
-            return {"type": "operand", "kind": "identifier", "name": name}
+        if re.search(rf"\b{name}\b", lowered):
+            return {
+                "type": "operand",
+                "kind": "identifier",
+                "name": name
+            }
 
     return None
 
 
-
 def parse_cross_condition(sentence: str) -> Optional[Dict[str, Any]]:
+
     s = sentence.lower()
 
     if "cross" not in s:
@@ -117,17 +147,14 @@ def nl_to_struct(nl_text: str) -> Dict[str, List[Dict[str, Any]]]:
     sentences = re.split(r"[.,]", text)
 
     for sent in sentences:
+        
         s = sent.strip()
         if not s:
             continue
 
-        target = None
-        if any(word in s for word in ["buy", "enter", "go long"]):
-            target = entry_conditions
-        elif any(word in s for word in ["sell", "exit", "close position"]):
+        if any(word in s for word in ["sell", "exit", "close position"]):
             target = exit_conditions
         else:
-            
             target = entry_conditions
 
         cross = parse_cross_condition(s)
@@ -136,29 +163,46 @@ def nl_to_struct(nl_text: str) -> Dict[str, List[Dict[str, Any]]]:
             continue
 
         indicator = parse_indicator(s)
-        if indicator:
-           
-            if "above" in s or "greater than" in s or ">" in s:
-                op = ">"
-                right = indicator
-            else:
-                op = "<"
-                right = indicator
 
-            left = parse_basic_operand(s) or {"type": "operand", "kind": "identifier", "name": "close"}
+        if indicator:
+
+            num_match = re.search(r"(above|below|>|<)\s*(\d+(\.\d+)?[mk]?)", s)
+            if num_match:
+                op_word, num_text = num_match.group(1), num_match.group(2)
+                try:
+                    right_val = normalize_number(num_text)
+                except:
+                    continue
+
+                op = ">" if op_word in ("above", ">") else "<"
+
+                target.append({
+                    "type": "comparison",
+                    "left": indicator,
+                    "op": op,
+                    "right": right_val,
+                })
+                continue
+
+            op = ">" if ("above" in s or "greater than" in s or ">" in s) else "<"
+            left = parse_basic_operand(s) or {
+                "type": "operand",
+                "kind": "identifier",
+                "name": "close"
+            }
 
             target.append({
                 "type": "comparison",
                 "left": left,
                 "op": op,
-                "right": right,
+                "right": indicator,
             })
             continue
 
-        look = parse_lookback_phrase(s)
-
         comp_match = re.search(r"(\w+)\s*(above|below|>|<)\s*([\w\.]+)", s)
+
         if comp_match:
+
             left_word, op_word, right_word = comp_match.groups()
 
             left = (
@@ -169,13 +213,11 @@ def nl_to_struct(nl_text: str) -> Dict[str, List[Dict[str, Any]]]:
             if not left:
                 continue
 
-            if op_word in ("above", ">"):
-                op = ">"
-            else:
-                op = "<"
+            op = ">" if op_word in ("above", ">") else "<"
 
             try:
                 right_val = normalize_number(right_word)
+
             except:
                 continue
 
