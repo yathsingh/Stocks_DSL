@@ -1,5 +1,6 @@
 Grammar explaination for better understanding: syntax_explaination.md 
 Actual grammar syntax: dsl/syntax.md
+
 <br><br>
 **HOW TO RUN**
 
