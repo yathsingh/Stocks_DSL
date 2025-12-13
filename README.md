@@ -16,6 +16,7 @@ Actual grammar syntax: dsl/syntax.md
 You will have the options to pick preset language commands for testing
 and quick report generation, of enter your own custom input.
 <br><br>
+
 *If you DO choose to enter custom input, please read:*
 <br>
 
