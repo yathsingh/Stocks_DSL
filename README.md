@@ -27,11 +27,13 @@ Write one trading condition per sentence.
 
 Do not use and / or within the same sentence.
 
-If your strategy has multiple conditions, write them as multiple lines.
+If your strategy has multiple conditions, write them as multiple lines (one condition per line).
 
 Clearly indicate whether a sentence is for entry (buy, enter) or exit (exit, sell).
 
-Keep sentences short and direct.
+Use clear phrasing such as “is above” or “is below” instead of shortened expressions.
+
+Keep sentences short, explicit, and consistent in structure.
 <br><br>
 
 ***Examples***
