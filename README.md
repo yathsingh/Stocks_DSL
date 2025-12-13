@@ -1,3 +1,5 @@
+<h5>End-to-end NLP → DSL → AST → Python pipeline for stock trading strategies with backtesting.<h5>
+
 Grammar explaination for better understanding: syntax_explaination.md 
 
 Actual grammar syntax: dsl/syntax.md
@@ -5,7 +7,9 @@ Actual grammar syntax: dsl/syntax.md
 <br><br>
 **HOW TO RUN**
 
-Pull the project and run 'main.py'.
+1. Clone the repo
+   
+2. Run main.py
 
 You will have the options to pick preset language commands for testing
 and quick report generation, of enter your own custom input.
