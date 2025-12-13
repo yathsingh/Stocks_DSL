@@ -1,6 +1,6 @@
 Grammar explaination for better understanding: syntax_explaination.md 
 Actual grammar syntax: dsl/syntax.md
-
+<br><br>
 **HOW TO RUN**
 
 Pull the project and run 'main.py'.
@@ -46,6 +46,7 @@ Exit when close crosses below the 10-day moving average.
 
 Buy when yesterday's high is above today's close.
 
+<br><br>
 **(EXTRA)**
 **DOCUMENTATION OF BUILDING PROCESS:**
 
