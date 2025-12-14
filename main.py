@@ -37,7 +37,7 @@ def load_sample_data():
         "open":   [100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
         "high":   [101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
         "low":    [ 99, 100, 101, 102, 103, 104, 105, 106, 107, 108],
-        "close":  [100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
+        "close":  [100, 99, 98, 97, 96, 105, 106, 107, 108, 109],
         "volume": [500000, 1200000, 900000, 2000000, 1500000, 1100000, 950000, 1800000, 1300000, 1600000],
     }
 
@@ -62,11 +62,6 @@ def main():
         "2": """
         Enter when close crosses above the 10-day moving average.
         Exit when close crosses below the 10-day moving average.
-        """,
-        
-        "3": """
-        Buy when yesterday's high is above today's close.
-        Exit when volume is below 900k.
         """
     }
 

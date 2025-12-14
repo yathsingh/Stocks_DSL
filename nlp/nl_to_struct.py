@@ -112,7 +112,7 @@ def parse_cross_condition(sentence: str) -> Optional[Dict[str, Any]]:
     if not direction:
         return None
 
-    left_part, right_part = re.split(r"crosses (above|below)", s, maxsplit=1)
+    left_part, right_part = re.split(r"crosses (?:above|below)", s, maxsplit=1)
 
     left_operand = (
         parse_indicator(left_part)
