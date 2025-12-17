@@ -3,6 +3,7 @@ from typing import Dict, Any, List, Optional
 
 
 def normalize_number(text: str) -> float:
+    """Shorthand support"""
 
     text = text.lower().strip()
 
@@ -16,6 +17,7 @@ def normalize_number(text: str) -> float:
 
 
 def parse_lookback_phrase(text: str) -> Optional[Dict[str, Any]]:
+    """Detects lookback."""
 
     t = text.lower().strip()
 
@@ -57,31 +59,53 @@ def parse_lookback_phrase(text: str) -> Optional[Dict[str, Any]]:
 
 
 def parse_indicator(text: str) -> Optional[Dict[str, Any]]:
+    """Detects technical indicators."""
 
     t = text.lower().strip()
 
-    sma_match = re.search(r"(\d+)[-\s]*day moving average", t)
-    if sma_match:
+    sma_prefix = re.search(r"(sma|simple moving average|moving average)[\s\(]*(\d+)", t)
+
+    if sma_prefix:
+
+        period = int(sma_prefix.group(2))
+
         return {
             "type": "operand",
             "kind": "indicator",
             "name": "SMA",
-            "args": ["close", int(sma_match.group(1))]
+            "args": ["close", period]
         }
 
-    rsi_match = re.search(r"rsi[\s\(]*(\d+)", t)
+    sma_suffix = re.search(r"(\d+)[-\s]*(day)?\s*(sma|simple moving average|moving average)", t)
+
+    if sma_suffix:
+
+        period = int(sma_suffix.group(1))
+        return {
+            "type": "operand",
+            "kind": "indicator",
+            "name": "SMA",
+            "args": ["close", period]
+        }
+
+
+    rsi_match = re.search(r"(rsi|relative strength index)[\s\(]*(\d+)", t)
+
     if rsi_match:
+
+        period = int(rsi_match.group(2))
         return {
             "type": "operand",
             "kind": "indicator",
             "name": "RSI",
-            "args": ["close", int(rsi_match.group(1))]
+            "args": ["close", period]
         }
 
     return None
 
 
 def parse_basic_operand(text: str) -> Optional[Dict[str, Any]]:
+    """Detects crossover events."""
 
     lowered = text.lower()
 
@@ -138,6 +162,7 @@ def parse_cross_condition(sentence: str) -> Optional[Dict[str, Any]]:
 
 
 def nl_to_struct(nl_text: str) -> Dict[str, List[Dict[str, Any]]]:
+    """Main nl -> struct converter function."""
 
     text = nl_text.lower()
 
