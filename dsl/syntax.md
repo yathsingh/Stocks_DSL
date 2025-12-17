@@ -100,7 +100,6 @@ ENTRY:
 2. '*' indicates zero or more repetitions.
 3. Boolean operators are left-associative.
 4. Keywords and identifiers are case-insensitive.
-5. The DSL uses numeric literals exclusively (no shorthand like 1M).
-6. Natural-language expressions ("yesterday", "last week") are normalized
+5. Natural-language expressions ("yesterday", "last week") are normalized
    BEFORE reaching this grammar.
-7. Grammar is intentionally LL(1) and unambiguous to support recursive descent.
+6. Grammar is intentionally LL(1) and unambiguous to support recursive descent.
