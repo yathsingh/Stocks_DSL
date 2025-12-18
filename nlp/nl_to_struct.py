@@ -182,7 +182,7 @@ def nl_to_struct(nl_text: str) -> Dict[str, List[Dict[str, Any]]]:
         else:
             target = entry_conditions
 
-        s = re.sub(r"\b(buy|sell|enter|exit|close position|when)\b", "", s).strip()
+        s = re.sub(r"\b(buy|sell|enter|exit|close position|when|is)\b", "", s).strip()
 
         cross = parse_cross_condition(s)
         if cross:
