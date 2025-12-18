@@ -2,6 +2,7 @@ from typing import Dict, Any, List
 
 
 def operand_to_dsl(op: Dict[str, Any]) -> str:
+    """Determines type of rule. (Recursive)"""
 
     kind = op["kind"]
 
@@ -31,6 +32,7 @@ def operand_to_dsl(op: Dict[str, Any]) -> str:
 
 
 def comparison_to_dsl(node: Dict[str, Any]) -> str:
+    """Reconstructs standard binary operations."""
 
     left = node["left"]
     right = node["right"]
@@ -55,6 +57,7 @@ def cross_to_dsl(node: Dict[str, Any]) -> str:
 
 
 def rule_to_dsl(rule: Dict[str, Any]) -> str:
+    """Determines which function to pick to handle current rule."""
 
     rtype = rule["type"]
 
@@ -68,6 +71,7 @@ def rule_to_dsl(rule: Dict[str, Any]) -> str:
 
 
 def struct_to_dsl(struct: Dict[str, Any]) -> str:
+    """Main functiom to convert structure -> dsl."""
 
     entry_rules = struct.get("entry", [])
     exit_rules = struct.get("exit", [])
