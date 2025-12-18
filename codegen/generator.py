@@ -34,7 +34,7 @@ def rsi(series, period):
 
 
 def _expr_to_code(node):
-    """Convert AST expression node → Python code string."""
+    """Converts AST expression node → Python code string."""
 
     if isinstance(node, IdentifierNode):
         return f'df["{node.name}"]'
@@ -85,7 +85,7 @@ def _expr_to_code(node):
 
 
 def _gen_rule_series_code(rules, series_name):
-    """Convert rule list → Python code lines."""
+    """Converts rule list → Python code lines."""
     
     lines = []
 
@@ -106,6 +106,8 @@ def _gen_rule_series_code(rules, series_name):
 
 
 def generate_python(strategy):
+    """Main python code generator"""
+
     lines = []
     lines.append("import pandas as pd")
     lines.append("")
