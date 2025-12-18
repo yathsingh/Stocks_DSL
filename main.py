@@ -96,7 +96,6 @@ def main():
     print("\n======= NATURAL LANGUAGE INPUT =======\n")
     print(nl)
 
-    # Pipeline continues exactly as before
     struct = nl_to_struct(nl)
     print("\n======= STRUCT =======\n", struct)
 
