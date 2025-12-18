@@ -3,6 +3,7 @@ from dsl.tokenizer import Token
 
 
 class TokenStream:
+    
     def __init__(self, tokens: List[Token]):
         self.tokens = tokens
         self.pos = 0 
